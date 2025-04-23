@@ -5,6 +5,7 @@ def lambda_handler(event, context):
     timestamp = datetime.datetime.now().isoformat()
     
     print(f"Function executed at: {timestamp}")
+    print("DONE")
     
     return {
         "statusCode": 200,
