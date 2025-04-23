@@ -20,23 +20,21 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: \${{ secrets.AWS_REGION }}
           
       - name: Install AWS SAM CLI
         run: |
-          curl -L "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip" -o "/tmp/sam-cli.zip"
-          unzip /tmp/sam-cli.zip -d /tmp/sam-cli
-          sudo /tmp/sam-cli/install
+          pip install aws-sam-cli
       
       - name: Build and deploy with SAM
         run: |
           sam build
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name my-python-lambda-api --s3-bucket ${{ secrets.S3_BUCKET }} --capabilities CAPABILITY_IAM
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name my-python-lambda-api --s3-bucket \${{ secrets.S3_BUCKET }} --capabilities CAPABILITY_IAM
           
       - name: Test Lambda API
         run: |
-          ENDPOINT_URL=$(aws cloudformation describe-stacks --stack-name my-python-lambda-api --query "Stacks[0].Outputs[?OutputKey=='ApiEndpoint'].OutputValue" --output text)
-          echo "API Endpoint: $ENDPOINT_URL"
-          curl -s $ENDPOINT_URL
+          ENDPOINT_URL=\$(aws cloudformation describe-stacks --stack-name my-python-lambda-api --query "Stacks[0].Outputs[?OutputKey=='ApiEndpoint'].OutputValue" --output text)
+          echo "API Endpoint: \$ENDPOINT_URL"
+          curl -s \$ENDPOINT_URL
