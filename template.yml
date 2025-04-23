@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  MySimplePythonApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./function/
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      Architectures: [x86_64]
+      Timeout: 10
+      Role: !Sub 'arn:aws:iam::616085821100:role/simple-api-lambda-role'  # Replace with your role ARN
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"
